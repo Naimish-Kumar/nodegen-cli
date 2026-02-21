@@ -17,80 +17,84 @@ fn generate_error_middleware(
     project_path: &PathBuf,
     config: &ProjectConfig,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let content = r#"import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
+    let logger_import = config.get_logger_import_path_from_middleware();
+    let content = format!(
+        r#"import {{ Request, Response, NextFunction }} from 'express';
+import {{ logger }} from '{logger_import}';
 
-export class AppError extends Error {
+export class AppError extends Error {{
   public statusCode: number;
   public isOperational: boolean;
 
-  constructor(message: string, statusCode: number, isOperational = true) {
+  constructor(message: string, statusCode: number, isOperational = true) {{
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;
     Object.setPrototypeOf(this, AppError.prototype);
     Error.captureStackTrace(this, this.constructor);
-  }
-}
+  }}
+}}
 
-export class NotFoundError extends AppError {
-  constructor(message = 'Resource not found') {
+export class NotFoundError extends AppError {{
+  constructor(message = 'Resource not found') {{
     super(message, 404);
-  }
-}
+  }}
+}}
 
-export class BadRequestError extends AppError {
-  constructor(message = 'Bad request') {
+export class BadRequestError extends AppError {{
+  constructor(message = 'Bad request') {{
     super(message, 400);
-  }
-}
+  }}
+}}
 
-export class UnauthorizedError extends AppError {
-  constructor(message = 'Unauthorized') {
+export class UnauthorizedError extends AppError {{
+  constructor(message = 'Unauthorized') {{
     super(message, 401);
-  }
-}
+  }}
+}}
 
-export class ForbiddenError extends AppError {
-  constructor(message = 'Forbidden') {
+export class ForbiddenError extends AppError {{
+  constructor(message = 'Forbidden') {{
     super(message, 403);
-  }
-}
+  }}
+}}
 
-export class ConflictError extends AppError {
-  constructor(message = 'Conflict') {
+export class ConflictError extends AppError {{
+  constructor(message = 'Conflict') {{
     super(message, 409);
-  }
-}
+  }}
+}}
 
 export const errorHandler = (
   err: Error | AppError,
   _req: Request,
   res: Response,
   _next: NextFunction,
-): void => {
-  if (err instanceof AppError) {
-    logger.warn(`[${err.statusCode}] ${err.message}`);
-    res.status(err.statusCode).json({
+): void => {{
+  if (err instanceof AppError) {{
+    logger.warn(`[${{err.statusCode}}] ${{err.message}}`);
+    res.status(err.statusCode).json({{
       success: false,
       message: err.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-    });
+      ...(process.env.NODE_ENV === 'development' && {{ stack: err.stack }}),
+    }});
     return;
-  }
+  }}
 
   // Unexpected errors
   logger.error('Unexpected error:', err);
-  res.status(500).json({
+  res.status(500).json({{
     success: false,
     message: 'Internal Server Error',
-    ...(process.env.NODE_ENV === 'development' && {
+    ...(process.env.NODE_ENV === 'development' && {{
       error: err.message,
       stack: err.stack,
-    }),
-  });
-};
-"#;
+    }}),
+  }});
+}};
+"#,
+        logger_import = logger_import
+    );
 
     std::fs::write(
         project_path.join(format!("src/middleware/error.middleware.{}", config.get_ext())),
@@ -104,33 +108,37 @@ fn generate_logger_middleware(
     project_path: &PathBuf,
     config: &ProjectConfig,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let content = r#"import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
+    let logger_import = config.get_logger_import_path_from_middleware();
+    let content = format!(
+        r#"import {{ Request, Response, NextFunction }} from 'express';
+import {{ logger }} from '{logger_import}';
 
-export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {{
   const start = Date.now();
 
-  res.on('finish', () => {
+  res.on('finish', () => {{
     const duration = Date.now() - start;
-    const logData = {
+    const logData = {{
       method: req.method,
       url: req.originalUrl,
       statusCode: res.statusCode,
-      duration: `${duration}ms`,
+      duration: `${{duration}}ms`,
       ip: req.ip,
       userAgent: req.get('user-agent'),
-    };
+    }};
 
-    if (res.statusCode >= 400) {
+    if (res.statusCode >= 400) {{
       logger.warn('Request completed with error', logData);
-    } else {
+    }} else {{
       logger.info('Request completed', logData);
-    }
-  });
+    }}
+  }});
 
   next();
-};
-"#;
+}};
+"#,
+        logger_import = logger_import
+    );
 
     std::fs::write(
         project_path.join(format!(

@@ -1,6 +1,6 @@
 {
     "name": "node-project-gen",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "⚡ Blazing fast, architecture-aware Node.js backend generator.",
     "main": "index.js",
     "bin": {

@@ -1,6 +1,6 @@
 [package]
 name = "node-project-gen"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 authors = ["Naimish Kumar Verma <vnaimish19@gmail.com>"]
 description = "⚡ Blazing fast, architecture-aware Node.js backend generator. Scaffold production-ready projects in under 1 second."

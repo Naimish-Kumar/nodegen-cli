@@ -38,7 +38,7 @@ fn generate_jwt_auth(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let ext = config.get_ext();
     let config_import = config.get_config_import_path();
-    let error_middleware_import = config_import.replace("config/env.config", "middleware/error.middleware");
+    let error_middleware_import = config.get_error_middleware_import_path_from_module("auth");
 
     // Auth Controller
     let controller = r#"import { Request, Response, NextFunction } from 'express';
@@ -303,7 +303,7 @@ export const authorize = (...roles: string[]) => {{
         error_middleware_import = error_middleware_import
     );
 
-    let rate_limit_import = config_import.replace("config/env.config", "middleware/rateLimit.middleware");
+    let rate_limit_import = error_middleware_import.replace("error.middleware", "rateLimit.middleware");
     // Auth Routes
     let routes = format!(
         r#"import {{ Router }} from 'express';
@@ -574,7 +574,7 @@ fn generate_firebase_auth(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let ext = config.get_ext();
     let config_import = config.get_config_import_path();
-    let error_middleware_import = config_import.replace("config/env.config", "middleware/error.middleware");
+    let error_middleware_import = config.get_error_middleware_import_path_from_module("auth");
 
     let firebase_config = r#"import * as admin from 'firebase-admin';
 

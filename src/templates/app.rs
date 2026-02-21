@@ -20,7 +20,7 @@ fn generate_express_app(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let ext = config.get_ext();
     let config_import = config.get_env_config_import_path_from_src();
-    let logger_import = config.get_logger_import_path();
+    let logger_import = config.get_logger_import_path_from_src();
 
     let _validation_import = match config.validation {
         ValidationLib::Zod => "",
@@ -166,6 +166,7 @@ fn generate_fastify_app(
         ""
     };
 
+    let logger_import = config.get_logger_import_path_from_src();
     let content = format!(
         r#"import Fastify, {{ FastifyInstance }} from 'fastify';
 import cors from '@fastify/cors';
@@ -174,7 +175,7 @@ import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import {{ config }} from './config/env.config';
-import {{ logger }} from './utils/logger';{db_import}
+import {{ logger }} from '{logger_import}';{db_import}
 
 class App {{
   public app: FastifyInstance;

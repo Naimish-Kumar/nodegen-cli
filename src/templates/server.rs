@@ -20,7 +20,7 @@ fn generate_express_server(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let app_import = config.get_app_import_path();
     let config_import = config.get_env_config_import_path_from_src();
-    let logger_import = config.get_logger_import_path();
+    let logger_import = config.get_logger_import_path_from_src();
 
     let content = format!(
         r#"import app from '{app_import}';
@@ -81,7 +81,7 @@ fn generate_fastify_server(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let app_import = config.get_app_import_path();
     let config_import = config.get_env_config_import_path_from_src();
-    let logger_import = config.get_logger_import_path();
+    let logger_import = config.get_logger_import_path_from_src();
 
     let content = format!(
         r#"import app from '{app_import}';
@@ -135,7 +135,7 @@ fn generate_nest_server(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let app_module_import = "./app.module";
     let config_import = config.get_env_config_import_path_from_src();
-    let logger_import = config.get_logger_import_path();
+    let logger_import = config.get_logger_import_path_from_src();
 
     let content = format!(
         r#"import {{ NestFactory }} from '@nestjs/core';

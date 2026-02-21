@@ -24,7 +24,7 @@ pub fn print_banner() {
     \n    ║   ▄▀█ █▀▀ █▀█ █▀█ █▀▀ █▀█ █▀▄ █▀▀ █▀█                     ║\
     \n    ║   █▀█ █▄▄ █▀▄ █▄█ █▄▄ █▄█ █▄▀ ██▄ █▀▄                     ║\
     \n    ║                                                           ║\
-    \n    ║          ⚡ Acrocoder Backend Generator v1.0.0 ⚡           ║\
+    \n    ║          ⚡ Acrocoder Backend Generator v0.0.3 ⚡           ║\
     \n    ║                                                           ║\
     \n    ╚═══════════════════════════════════════════════════════════╝\
     \n{RESET}"

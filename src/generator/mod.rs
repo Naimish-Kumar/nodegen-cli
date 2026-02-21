@@ -115,13 +115,24 @@ impl ProjectConfig {
         "./app".to_string()
     }
 
-    pub fn get_logger_import_path(&self) -> String {
+    pub fn get_logger_import_path_from_src(&self) -> String {
         match self.arch {
             Architecture::Modular => "./shared/utils/logger".to_string(),
             _ => "./utils/logger".to_string(),
         }
     }
-    
+
+    pub fn get_logger_import_path_from_middleware(&self) -> String {
+        match self.arch {
+            Architecture::Modular => "../shared/utils/logger".to_string(),
+            _ => "../utils/logger".to_string(),
+        }
+    }
+
+    pub fn get_error_middleware_import_path_from_src(&self) -> String {
+        "./middleware/error.middleware".to_string()
+    }
+
     pub fn get_env_config_import_path_from_src(&self) -> String {
         "./config/env.config".to_string()
     }
@@ -133,6 +144,16 @@ impl ProjectConfig {
             Architecture::Modular => format!("../modules/{}/routes/{}", module, module),
             Architecture::Hexagonal => format!("../adapters/inbound/http/routes/{}", module),
             Architecture::Microservice => format!("./{}", module),
+        }
+    }
+
+    pub fn get_error_middleware_import_path_from_module(&self, _module: &str) -> String {
+        match self.arch {
+            Architecture::Modular => "../../../middleware/error.middleware".to_string(),
+            Architecture::Mvc => "../../middleware/error.middleware".to_string(),
+            Architecture::Clean => "../../../../middleware/error.middleware".to_string(),
+            Architecture::Hexagonal => "../../../../../../middleware/error.middleware".to_string(),
+            Architecture::Microservice => "../../middleware/error.middleware".to_string(),
         }
     }
 
