@@ -1,6 +1,6 @@
 {
     "name": "nodegen-toolkit",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "⚡ Blazing fast, architecture-aware Node.js backend generator.",
     "main": "index.js",
     "bin": {
