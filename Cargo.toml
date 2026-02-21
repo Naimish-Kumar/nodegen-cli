@@ -1,5 +1,5 @@
 [package]
-name = "nodegen"
+name = "node-project-gen"
 version = "1.0.0"
 edition = "2021"
 authors = ["Naimish Kumar Verma <vnaimish19@gmail.com>"]
@@ -11,7 +11,7 @@ keywords = ["node", "backend", "scaffolding", "architecture", "cli"]
 categories = ["command-line-utilities", "development-tools"]
 
 [[bin]]
-name = "nodegen"
+name = "node-project-gen"
 path = "src/main.rs"
 
 [dependencies]

@@ -10,12 +10,12 @@ function getBinaryName() {
 
     // Map platform and arch to your pre-compiled binaries
     if (platform === 'win32') {
-        return 'nodegen-win.exe';
+        return 'node-project-gen-win.exe';
     } else if (platform === 'darwin') {
-        return 'nodegen-macos';
+        return 'node-project-gen-macos';
     } else if (platform === 'linux') {
-        if (arch === 'x64') return 'nodegen-linux';
-        if (arch === 'arm64') return 'nodegen-linux-arm64';
+        if (arch === 'x64') return 'node-project-gen-linux';
+        if (arch === 'arm64') return 'node-project-gen-linux-arm64';
     }
     
     throw new Error(`Unsupported platform: ${platform} ${arch}`);
