@@ -1,0 +1,73 @@
+name: Publish to NPM
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: nodegen
+            asset_name: nodegen-linux
+          - os: macos-latest
+            artifact_name: nodegen
+            asset_name: nodegen-macos
+          - os: windows-latest
+            artifact_name: nodegen.exe
+            asset_name: nodegen-win.exe
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build Release
+        run: cargo build --release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: target/release/${{ matrix.artifact_name }}
+
+  publish:
+    name: Publish to NPM
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: bin-temp
+
+      - name: Prepare npm package
+        run: |
+          mkdir -p npm/bin
+          cp bin-temp/nodegen-linux/nodegen npm/bin/nodegen-linux
+          cp bin-temp/nodegen-macos/nodegen npm/bin/nodegen-macos
+          cp bin-temp/nodegen-win.exe/nodegen.exe npm/bin/nodegen-win.exe
+          chmod +x npm/bin/nodegen-linux npm/bin/nodegen-macos
+          cp README.md npm/
+          cp LICENSE npm/
+          
+          # Sync version from tag
+          TAG=${GITHUB_REF#refs/tags/v}
+          sed -i "s/\"version\": \".*\"/\"version\": \"$TAG\"/" npm/package.json
+
+      - name: Publish to NPM
+        working-directory: npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

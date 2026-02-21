@@ -1,0 +1,29 @@
+{
+    "name": "nodegen",
+    "version": "1.0.0",
+    "description": "⚡ Blazing fast, architecture-aware Node.js backend generator.",
+    "main": "index.js",
+    "bin": {
+        "nodegen": "index.js"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "node",
+        "backend",
+        "scaffolding",
+        "architecture",
+        "rust",
+        "generator"
+    ],
+    "author": "Naimish Kumar Verma",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/naimishverma/nodegen-cli.git"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}

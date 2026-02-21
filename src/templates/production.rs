@@ -1,0 +1,245 @@
+use crate::generator::ProjectConfig;
+use std::path::PathBuf;
+
+pub fn generate(
+    project_path: &PathBuf,
+    config: &ProjectConfig,
+) -> Result<(), Box<dyn std::error::Error>> {
+    generate_dockerfile(project_path)?;
+    generate_dockerignore(project_path)?;
+    generate_docker_compose(project_path, config)?;
+    generate_eslint(project_path)?;
+    generate_prettier(project_path)?;
+    generate_gitignore(project_path)?;
+    generate_readme(project_path, config)?;
+    generate_nodemon(project_path)?;
+    Ok(())
+}
+
+fn generate_dockerfile(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = r#"FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejs && adduser -S nodeapp -u 1001
+COPY --from=builder --chown=nodeapp:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodeapp:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodeapp:nodejs /app/package.json ./
+USER nodeapp
+EXPOSE 3000
+ENV NODE_ENV=production
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => { if (r.statusCode !== 200) throw new Error(); })"
+CMD ["node", "dist/server.js"]
+"#;
+    std::fs::write(project_path.join("Dockerfile"), content)?;
+    Ok(())
+}
+
+fn generate_dockerignore(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = "node_modules\ndist\n.env\n.env.*\n*.log\n.git\ncoverage\ntests\n";
+    std::fs::write(project_path.join(".dockerignore"), content)?;
+    Ok(())
+}
+
+fn generate_docker_compose(
+    project_path: &PathBuf,
+    config: &ProjectConfig,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut services = String::from(
+        r#"version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+"#,
+    );
+
+    if let Some(db) = config.db {
+        match db {
+            crate::cli::Database::Postgres => {
+                services.push_str("      - postgres\n\n  postgres:\n    image: postgres:16-alpine\n    ports:\n      - \"5432:5432\"\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: password\n      POSTGRES_DB: mydb\n    volumes:\n      - pgdata:/var/lib/postgresql/data\n\nvolumes:\n  pgdata:\n");
+            }
+            crate::cli::Database::Mongodb => {
+                services.push_str("      - mongo\n\n  mongo:\n    image: mongo:7\n    ports:\n      - \"27017:27017\"\n    volumes:\n      - mongodata:/data/db\n\nvolumes:\n  mongodata:\n");
+            }
+            crate::cli::Database::Mysql => {
+                services.push_str("      - mysql\n\n  mysql:\n    image: mysql:8\n    ports:\n      - \"3306:3306\"\n    environment:\n      MYSQL_ROOT_PASSWORD: password\n      MYSQL_DATABASE: mydb\n    volumes:\n      - mysqldata:/var/lib/mysql\n\nvolumes:\n  mysqldata:\n");
+            }
+            _ => {
+                services.push_str("      []\n");
+            }
+        }
+    } else {
+        services.push_str("      []\n");
+    }
+
+    std::fs::write(project_path.join("docker-compose.yml"), services)?;
+    Ok(())
+}
+
+fn generate_eslint(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = r#"{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "env": { "node": true, "es2022": true },
+  "parserOptions": { "ecmaVersion": 2022, "sourceType": "module" },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "no-console": "warn"
+  },
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
+}
+"#;
+    std::fs::write(project_path.join(".eslintrc.json"), content)?;
+    Ok(())
+}
+
+fn generate_prettier(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = r#"{
+  "semi": true,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "endOfLine": "lf",
+  "arrowParens": "always"
+}
+"#;
+    std::fs::write(project_path.join(".prettierrc"), content)?;
+    Ok(())
+}
+
+fn generate_gitignore(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = r#"# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+
+# Prisma
+prisma/*.db
+prisma/migrations/
+"#;
+    std::fs::write(project_path.join(".gitignore"), content)?;
+    Ok(())
+}
+
+fn generate_readme(
+    project_path: &PathBuf,
+    config: &ProjectConfig,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let content = format!(
+        r#"# {name}
+
+> Generated by [NodeGen CLI](https://github.com/naimishverma/nodegen-cli) ⚡
+
+## Stack
+
+- **Framework:** {framework}
+- **Architecture:** {arch}
+- **Language:** TypeScript
+- **Testing:** {test}
+- **Validation:** {validation}
+- **Logger:** {logger}
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm test` | Run tests |
+| `npm run lint` | Lint code |
+| `npm run format` | Format code |
+
+## API Documentation
+
+Swagger docs available at: `http://localhost:3000/api-docs`
+
+## Docker
+
+```bash
+docker-compose up -d
+```
+
+## License
+
+MIT
+"#,
+        name = config.name,
+        framework = config.framework,
+        arch = config.arch,
+        test = config.test,
+        validation = config.validation,
+        logger = config.logger,
+    );
+
+    std::fs::write(project_path.join("README.md"), content)?;
+    Ok(())
+}
+
+fn generate_nodemon(project_path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let content = r#"{
+  "watch": ["src"],
+  "ext": "ts,json",
+  "ignore": ["dist", "node_modules"],
+  "exec": "ts-node-dev --respawn --transpile-only src/server.ts"
+}
+"#;
+    std::fs::write(project_path.join("nodemon.json"), content)?;
+    Ok(())
+}
