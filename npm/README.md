@@ -38,7 +38,7 @@ NodeGen scaffolds a complete project with authentication, database integration, 
 cargo install nodegen-cli
 ```
 
-### Via NPM (Coming Soon)
+### Via NPM
 ```bash
 npx nodegen create my-api
 ```
@@ -146,4 +146,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-Generated with ❤️ by [NodeGen](https://github.com/naimishverma/nodegen-cli)
+Generated with ❤️ by [Acrocoder](https://github.com/naimishverma/nodegen-cli)
