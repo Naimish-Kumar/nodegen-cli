@@ -146,4 +146,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-Generated with ❤️ by [Node Project Gen](https://github.com/Naimish-Kumar/nodegen-cli)
+Generated with ❤️ by [Acrocoder](https://github.com/Naimish-Kumar/nodegen-cli)
