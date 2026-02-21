@@ -40,7 +40,7 @@ cargo install nodegen-cli
 
 ### Via NPM
 ```bash
-npx nodegen create my-api
+npx nodegen-toolkit create my-api
 ```
 
 ---
