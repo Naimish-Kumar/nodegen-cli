@@ -2,11 +2,11 @@ use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(
-    name = "nodegen",
+    name = "node-project-gen",
     version,
     about = "⚡ Lightning-fast Node.js backend generator",
-    long_about = "NodeGen - Generate production-ready Node.js backends in seconds.\n\nBuilt with Rust for blazing fast scaffolding.",
-    after_help = "Examples:\n  nodegen create my_api --arch clean --db postgres --auth jwt\n  nodegen create my_api --arch mvc --framework fastify --db mongodb\n  nodegen generate module auth\n  nodegen add docker"
+    long_about = "Acrocoder - Generate production-ready Node.js backends in seconds.\n\nBuilt with Rust for blazing fast scaffolding.",
+    after_help = "Examples:\n  node-project-gen create my_api --arch clean --db postgres --auth jwt\n  node-project-gen create my_api --arch mvc --framework fastify --db mongodb\n  node-project-gen generate module auth\n  node-project-gen add docker"
 )]
 pub struct Cli {
     #[command(subcommand)]
