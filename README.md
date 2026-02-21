@@ -12,7 +12,7 @@ Node Project Gen allows you to generate production-ready, scalable, and secure N
 
 ## 🚀 Speed Demo
 
-Node Project Gen scaffolds a complete project with authentication, database integration, logging, validation, and Docker support in **less than 1 second**.
+Acrocoder scaffolds a complete project with authentication, database integration, logging, validation, and Docker support in **less than 1 second**.
 
 ## ✨ Features
 
@@ -53,10 +53,10 @@ The `create` command is the main entry point for scaffolding.
 
 ```bash
 # Basic project
-node-project-gen create my-api
+acrocoder create my-api
 
 # Custom project with specific stack
-node-project-gen create my-api \
+acrocoder create my-api \
   --arch clean \
   --framework express \
   --db postgres \
@@ -81,10 +81,10 @@ Generate new resources or components in an existing project.
 
 ```bash
 # Generate a full CRUD module
-node-project-gen generate module users --crud
+acrocoder generate module users --crud
 
 # Generate middleware
-node-project-gen generate middleware auth
+acrocoder generate middleware auth
 ```
 
 ### Add Features
@@ -92,17 +92,17 @@ node-project-gen generate middleware auth
 Easily add complex configurations to an existing project.
 
 ```bash
-node-project-gen add docker
-node-project-gen add swagger
-node-project-gen add cicd
-node-project-gen add websocket
+acrocoder add docker
+acrocoder add swagger
+acrocoder add cicd
+acrocoder add websocket
 ```
 
 ---
 
 ## 📂 Architecture Overview
 
-Node Project Gen supports multiple patterns. For example, the **Clean Architecture** layout:
+Acrocoder supports multiple patterns. For example, the **Clean Architecture** layout:
 
 ```text
 src/
@@ -146,4 +146,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-Generated with ❤️ by [Acrocoder](https://github.com/Naimish-Kumar/nodegen-cli)
+Generated with ❤️ by [Acrocoder](https://github.com/naimishverma/nodegen-cli)

@@ -1,8 +1,8 @@
-# NodeGen CLI ⚡
+# Node Project Gen ⚡
 
 > **Lightning-fast Node.js backend scaffolding CLI built in Rust.**
 
-NodeGen allows you to generate production-ready, scalable, and secure Node.js backends in seconds. It bridges the gap between simple boilerplate and complex enterprise frameworks by providing opinionated architectural patterns and modern best practices out of the box.
+Node Project Gen allows you to generate production-ready, scalable, and secure Node.js backends in seconds. It bridges the gap between simple boilerplate and complex enterprise frameworks by providing opinionated architectural patterns and modern best practices out of the box.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Rust](https://img.shields.io/badge/built%20with-Rust-orange.svg)
@@ -12,7 +12,7 @@ NodeGen allows you to generate production-ready, scalable, and secure Node.js ba
 
 ## 🚀 Speed Demo
 
-NodeGen scaffolds a complete project with authentication, database integration, logging, validation, and Docker support in **less than 1 second**.
+Acrocoder scaffolds a complete project with authentication, database integration, logging, validation, and Docker support in **less than 1 second**.
 
 ## ✨ Features
 
@@ -35,12 +35,12 @@ NodeGen scaffolds a complete project with authentication, database integration, 
 
 ### Via Cargo
 ```bash
-cargo install nodegen-cli
+cargo install node-project-gen
 ```
 
 ### Via NPM
 ```bash
-npx nodegen create my-api
+npx node-project-gen create my-api
 ```
 
 ---
@@ -53,10 +53,10 @@ The `create` command is the main entry point for scaffolding.
 
 ```bash
 # Basic project
-nodegen create my-api
+acrocoder create my-api
 
 # Custom project with specific stack
-nodegen create my-api \
+acrocoder create my-api \
   --arch clean \
   --framework express \
   --db postgres \
@@ -81,10 +81,10 @@ Generate new resources or components in an existing project.
 
 ```bash
 # Generate a full CRUD module
-nodegen generate module users --crud
+acrocoder generate module users --crud
 
 # Generate middleware
-nodegen generate middleware auth
+acrocoder generate middleware auth
 ```
 
 ### Add Features
@@ -92,17 +92,17 @@ nodegen generate middleware auth
 Easily add complex configurations to an existing project.
 
 ```bash
-nodegen add docker
-nodegen add swagger
-nodegen add cicd
-nodegen add websocket
+acrocoder add docker
+acrocoder add swagger
+acrocoder add cicd
+acrocoder add websocket
 ```
 
 ---
 
 ## 📂 Architecture Overview
 
-NodeGen supports multiple patterns. For example, the **Clean Architecture** layout:
+Acrocoder supports multiple patterns. For example, the **Clean Architecture** layout:
 
 ```text
 src/

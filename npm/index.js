@@ -17,7 +17,7 @@ function getBinaryName() {
         if (arch === 'x64') return 'node-project-gen-linux';
         if (arch === 'arm64') return 'node-project-gen-linux-arm64';
     }
-    
+
     throw new Error(`Unsupported platform: ${platform} ${arch}`);
 }
 
